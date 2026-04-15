@@ -28,7 +28,7 @@ async fn main() {
     // async || "Hello, Rust!" 是一个异步闭包（匿名函数）
     // 当访问 http://localhost:3001/ 时，返回 "Hello, Rust!"
     let router = Router::new()
-        .route("/", routing::get(async || "Hello, Rust!"));
+        .route("/", routing::get(index));
 
     // ============================================
     // 第二步：绑定网络端口
@@ -57,4 +57,10 @@ async fn main() {
     //
     // .unwrap() 处理启动错误（如权限不足等）
     axum::serve(listener, router).await.unwrap();
+}
+
+
+// 定义根路径的 GET 请求处理函数
+async fn index() -> String {
+    "Hello, Rust!".to_string()
 }
