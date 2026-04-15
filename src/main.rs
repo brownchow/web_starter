@@ -1,3 +1,8 @@
+// 导入日志模块，声明了一个名为 logger 的模块（对应 src/logger.rs 文件）
+// logger 模块封装了日志初始化逻辑，使用 tracing 库进行结构化日志记录
+// 类似于 Java 中的 log4j 或 slf4j
+mod logger;
+
 // 引入 axum 框架的路由相关组件
 // Router: 路由器，用于定义 URL 路由规则
 // routing: 包含 get/post 等 HTTP 方法处理函数
@@ -17,6 +22,7 @@ use tokio::net::TcpListener;
 // - 没有它，async main 函数无法直接运行，因为 Rust 标准库没有内置异步运行时
 #[tokio::main]
 async fn main() {
+    logger::init();
     // ============================================
     // 第一步：创建路由（Router）
     // ============================================
@@ -44,6 +50,7 @@ async fn main() {
     //
     // .unwrap()：如果 bind 失败（如端口被占用），程序会 panic 并退出
     let listener = TcpListener::bind("0.0.0.0:3001").await.unwrap();
+    tracing::info!("Server is running on port 3001");
 
     // ============================================
     // 第三步：启动 HTTP 服务器
