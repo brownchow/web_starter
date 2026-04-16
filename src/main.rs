@@ -2,6 +2,7 @@
 // logger 模块封装了日志初始化逻辑，使用 tracing 库进行结构化日志记录
 // 类似于 Java 中的 log4j 或 slf4j
 mod logger;
+mod config;
 
 // 引入 axum 框架的路由相关组件
 // Router: 路由器，用于定义 URL 路由规则
@@ -11,6 +12,7 @@ use axum::{Router, routing};
 // 引入 Tokio 的 TcpListener 用于网络监听
 // Tokio 是 Rust 的异步运行时，类似于 Java 的 Netty 或 Node.js 的事件循环
 use tokio::net::TcpListener;
+use tracing_subscriber::fmt::format;
 
 // #[tokio::main] 是一个宏（属性宏），它会自动帮我们：
 // 1. 创建一个 Tokio 运行时（Runtime）
@@ -49,7 +51,8 @@ async fn main() {
     // - 等 bind 完成后，再继续执行
     //
     // .unwrap()：如果 bind 失败（如端口被占用），程序会 panic 并退出
-    let listener = TcpListener::bind("0.0.0.0:3001").await.unwrap();
+    let port = config::get().server().port();
+    let listener = TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
     tracing::info!("Server is running on port 3001");
 
     // ============================================
